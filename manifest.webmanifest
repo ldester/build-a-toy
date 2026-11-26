@@ -1,0 +1,3 @@
+{ "name": "Build a Toy!", "short_name": "Build a Toy!", "start_url": "./", "scope": "./", "display": "fullscreen", "orientation": "portrait",
+  "background_color": "#0c0604", "theme_color": "#0c0604",
+  "icons": [ { "src": "./icone-512.png", "sizes": "512x512", "type": "image/png" }, { "src": "./apple-touch-icon.png", "sizes": "180x180", "type": "image/png" } ] }

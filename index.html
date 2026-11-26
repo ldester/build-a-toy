@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="theme-color" content="#0c0604">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Build a Toy!">
+<link rel="apple-touch-icon" href="./apple-touch-icon.png">
+<link rel="manifest" href="./manifest.webmanifest">
+<title>Build a Toy!</title>
+<link rel="icon" href="data:,">
+  <script type="module" crossorigin src="./assets/index-BTfBE7_G.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-BDLgvwLR.css">
+</head>
+<body>
+<canvas id="cena"></canvas>
+<div class="vinheta"></div>
+<div id="carregando"><div class="logo grande" data-logo></div><p data-i18n="carregando">Acendendo a luminária…</p></div>
+
+<!-- ===== mapa-tabuleiro (C2) + estante, lojinha e vitrine (C3; conteúdo montado por mapa.js, estante.js, loja.js e vitrine.js) ===== -->
+<section id="mapa" class="tela" data-i18n-aria="mapaAria" aria-label="Mapa dos níveis"></section>
+<section id="estante" class="tela" aria-labelledby="tituloEstante"></section>
+<section id="loja" class="tela" aria-labelledby="tituloLoja"></section>
+<div id="lojaFicha" role="dialog" aria-modal="true"></div>
+<section id="vitrine" class="tela"></section>
+<div id="ficha" role="dialog" aria-modal="true"></div>
+<button id="pularCaminhada" type="button"></button>
+<div id="mapaAviso" aria-live="polite"></div>
+
+<!-- ===== HUD da partida ===== -->
+<div id="botoes" class="so-jogo">
+  <button class="redondo" id="btPausa" data-i18n-aria="pausaAria" aria-label="Pausa"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round"><path d="M5 7h14M5 12h14M5 17h14"/></svg></button>
+  <button class="redondo" id="btSom" aria-label="Som ligado"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z" fill="#fff"/><path class="onda" d="M15.5 9a4 4 0 0 1 0 6"/><path class="onda" d="M18 6.5a7.5 7.5 0 0 1 0 11"/><path class="mudo" d="M16 9.5l5 5m0-5l-5 5" style="display:none"/></svg></button>
+</div>
+<div id="hud" class="so-jogo">
+  <div class="hud-pilula">
+    <div class="pilula bk-placa">
+      <div class="selo"><i></i><i></i><b id="seloNum">1</b><small data-i18n="passo">PASSO</small></div>
+      <div class="hud-meio">
+        <div class="hud-titulo"><span data-i18n="passo">PASSO</span> <span id="tituloNum">1</span><small> / <span id="totalPassos">20</span></small></div>
+        <div class="segs" id="segs"></div>
+      </div>
+      <span id="hudDesafio" class="hud-desafio" role="img" aria-label="Nível de desafio" hidden></span>
+    </div>
+    <div class="coracoes" id="coracoes" role="img" aria-label="3 corações"></div>
+    <div id="combo" class="bk bk-amarelo" aria-hidden="true"><span class="combo-rot">COMBO</span><b id="comboNum">×1</b><span class="combo-barra"><i id="comboBarra"></i></span></div>
+    <div id="nota" aria-hidden="true"></div>
+  </div>
+  <div id="cartaoPeca" class="bk-placa">
+    <div class="cp-faixa" data-i18n="proximaPeca">PRÓXIMA PEÇA</div>
+    <div class="cp-img"><img id="pecaImg" alt=""><span id="pecaCont">×1</span></div>
+    <div id="pecaNome"></div><div id="pecaCor"></div>
+    <span id="pecaAnuncio" aria-live="polite"></span>
+  </div>
+</div>
+<div id="dica" class="so-jogo" aria-live="polite"></div>
+<div id="bandejaA11y" class="so-leitor" role="group" aria-label="Bandeja de peças" data-i18n-aria="bandejaAria"></div>
+<div id="semWebgl" class="tela" role="alert"><div class="menu-caixa bk-placa"><h2 data-i18n="semWebglTitulo">O 3D não abriu</h2><p data-i18n="semWebglTexto">Seu aparelho não conseguiu iniciar os gráficos. Seu progresso está salvo.</p><button class="bt prim bk bk-amarelo" id="btRecarregar" data-i18n="recarregar">Tentar de novo</button></div></div>
+
+<!-- ===== cartões ===== -->
+<div id="final" class="cartao-fixo" role="dialog" aria-modal="true" aria-labelledby="tituloFinal">
+  <div class="cartao bk-placa">
+    <div class="estrelas" id="estrelasFinal"></div>
+    <div class="faixa"><div class="logo" data-logo="emp"></div><div class="etiqueta" id="etiquetaKit">CORA</div></div>
+    <div class="corpo">
+      <div class="titulo-final" id="tituloFinal" data-i18n="completa">MONTAGEM COMPLETA!</div>
+      <div class="nota-linha"><span id="notaFinal" class="bk bk-amarelo nota-final"></span></div>
+      <div class="moedas-linha" hidden><span class="so-leitor" id="fMoedasLeitor"></span><span class="moedas-vis" aria-hidden="true"><span class="moedas-ico"></span><b id="fMoedas">+0</b><small id="fMoedasDet"></small></span><span class="moedas-estante" id="fEstanteMsg" hidden></span></div>
+      <div class="pilulas">
+        <div class="pil"><span class="ico" style="background:#F3E743"><svg viewBox="0 0 24 24" fill="none" stroke="#0F121E" stroke-width="2.4" stroke-linejoin="round"><rect x="3" y="9" width="18" height="11" rx="2"/><path d="M6.5 9V6.5h4V9M13.5 9V6.5h4V9"/></svg></span><span id="fPecas">31</span><small data-i18n="pecas">PEÇAS</small></div>
+        <div class="pil"><span class="ico" style="background:#3DE6D0"><svg viewBox="0 0 24 24" fill="none" stroke="#0F121E" stroke-width="2.6" stroke-linecap="round"><path d="M6 7h12M6 12h12M6 17h8"/></svg></span><span id="fPassos">20</span><small data-i18n="passos">PASSOS</small></div>
+        <div class="pil"><span class="ico" style="background:#F59ACB"><svg viewBox="0 0 24 24" fill="none" stroke="#0F121E" stroke-width="2.4" stroke-linecap="round"><circle cx="12" cy="12" r="8"/><path d="M12 7.5V12l3 2"/></svg></span><span id="fTempo">00:00</span></div>
+      </div>
+      <!-- placar online: só aparece com o placar configurado (src/placar*.js) -->
+      <div class="placar-linha" id="placarLinha" hidden><span class="pl-msg" id="fPlacarMsg" role="status" aria-live="polite"></span><button type="button" class="bk bk-branco bt-placar" id="btPlacarFinal"><span class="pl-trofeu"></span><span data-i18n="verPlacar">Ver placar</span></button></div>
+    </div>
+  </div>
+  <div class="acoes">
+    <p class="aviso-anuncio aviso-topo" id="avisoVitoria" data-i18n="avisoVitoria">Pode aparecer um anúncio antes de seguir no mapa.</p>
+    <button class="bt prim bk bk-amarelo" id="btContinuar" disabled data-i18n="continuar">Continuar</button>
+    <button class="bt bk bk-branco bt-dobrar" id="btDobrar" disabled hidden></button>
+    <button class="bt bk bk-branco" id="btEstanteFinal" disabled data-i18n="voltarMapa">Voltar ao mapa</button>
+  </div>
+</div>
+<!-- C3.1: contador de pininhos do cartão de vitória (as moedas voam da linha "+N" até aqui) -->
+<div id="saldoVitoria" class="saldo-vitoria" hidden aria-hidden="true"><span class="sv-ico"></span><b id="svValor">0</b></div>
+<div id="derrota" class="cartao-fixo" role="dialog" aria-modal="true" aria-labelledby="tituloCalma">
+  <div class="cartao calma bk-placa">
+    <div class="faixa suave"><div class="logo" data-logo="emp"></div><div class="etiqueta" id="etiquetaKit2">CORA</div></div>
+    <div class="corpo">
+      <div class="titulo-calma" id="tituloCalma" data-i18n="calmaTitulo">Vamos com calma</div>
+      <p class="texto-calma" data-i18n="calmaTexto">Quando quiser, tente montar este kit de novo.</p>
+      <div class="xicara" aria-hidden="true"></div>
+    </div>
+  </div>
+  <div class="acoes">
+    <button class="bt prim bk bk-amarelo bt-reviver" id="btReviver" disabled hidden><span class="rev-linha"><svg class="rev-cor" viewBox="0 0 24 22" aria-hidden="true"><path d="M12 21C5 15.4 1.5 11.6 1.5 7.4 1.5 4 4.1 1.5 7.3 1.5c2 0 3.7 1 4.7 2.6 1-1.6 2.7-2.6 4.7-2.6 3.2 0 5.8 2.5 5.8 5.9 0 4.2-3.5 8-10.5 13.6z" fill="#E8503A" stroke="#3A2410" stroke-width="2"/></svg><span class="rev-rot" data-i18n="reviver">Reviver com 1 coração</span></span><small class="rev-sub" data-i18n="reviverSub">assista um anúncio</small></button>
+    <p class="aviso-anuncio" id="btReviverMsg" hidden data-i18n="reviverFalhou">Anúncio indisponível agora. Tente de novo.</p>
+    <button class="bt prim bk bk-amarelo" id="btTentar" disabled data-i18n="tentar">Tentar de novo</button>
+    <button class="bt bk bk-branco" id="btEstanteDerrota" disabled data-i18n="voltarMapa">Voltar ao mapa</button>
+    <p class="aviso-anuncio" id="avisoDerrota" data-i18n="avisoDerrota">Pode aparecer um anúncio antes da nova tentativa.</p>
+  </div>
+</div>
+
+<!-- ===== pausa, ajuda e configurações ===== -->
+<div id="menu" class="sobreposicao" role="dialog" aria-modal="true">
+  <div class="menu-caixa bk-placa">
+    <div class="painel" id="pPausa">
+      <h2 data-i18n="pausa">Pausa</h2>
+      <button class="bt prim bk bk-amarelo" id="mContinuar" data-i18n="continuar">Continuar</button>
+      <button class="bt bk bk-branco" id="mReiniciar" data-i18n="reiniciarNivel">Reiniciar nível</button>
+      <button class="bt bk bk-branco" id="mComo" data-i18n="como">Como montar</button>
+      <button class="bt bk bk-branco" id="mConfig" data-i18n="config">Configurações</button>
+      <button class="bt bk bk-branco" id="mEstante" data-i18n="voltarMapa">Voltar ao mapa</button>
+    </div>
+    <div class="painel" id="pAjuda">
+      <h2 data-i18n="como">Como montar</h2>
+      <p data-i18n-html="ajuda1">O manual no tablet mostra o passo. A peça pedida aparece no cartão PRÓXIMA PEÇA, no canto.</p>
+      <p data-i18n-html="ajuda2"><b>Toque</b> na peça certa da bandeja e ela voa até o lugar. Ou <b>arraste</b> e solte dentro do círculo ciano.</p>
+      <p data-i18n-html="ajuda3">Arrastar a peça errada para dentro do círculo gasta um coração. Sem pressa: não tem relógio.</p>
+      <button class="bt prim bk bk-amarelo" data-volta data-i18n="entendi">Entendi</button>
+    </div>
+    <div class="painel" id="pConfig">
+      <h2 data-i18n="config">Configurações</h2>
+      <label class="opcao"><span data-i18n="musica">Música</span><input type="checkbox" id="cMusica" checked></label>
+      <label class="opcao"><span data-i18n="efeitos">Efeitos sonoros</span><input type="checkbox" id="cEfeitos" checked></label>
+      <label class="opcao"><span data-i18n="vibrar">Vibrar ao encaixar</span><input type="checkbox" id="cVibrar" checked></label>
+      <label class="opcao"><span><span data-i18n="conforto">Modo conforto</span> <small data-i18n="confortoSub">menos movimento, tela mais suave</small></span><input type="checkbox" id="cConforto"></label>
+      <button class="bt bk bk-branco" id="cPrivacidade" hidden data-i18n="privacidade">Opções de privacidade</button>
+      <a class="bt bk bk-branco" id="cPolitica" href="./privacidade.html" target="_blank" rel="noopener" data-i18n="politica">Política de privacidade</a>
+      <label class="opcao"><span data-i18n="idioma">Idioma</span><select id="cIdioma"><option value="auto" data-i18n="idiomaAparelho">Idioma do aparelho</option><option value="pt-BR">Português (Brasil)</option><option value="en-US">English</option></select></label>
+      <button class="bt prim bk bk-amarelo" data-volta data-i18n="voltar">Voltar</button>
+    </div>
+  </div>
+</div>
+<div id="manualGrande" class="sobreposicao" role="dialog" aria-modal="true" aria-label="Manual ampliado"><img id="manualImg" alt="" data-i18n-aria="manualAria"><button class="bt prim bk bk-amarelo" id="fecharManual" data-i18n="fecharManual">Fechar</button></div>
+<div id="toque"></div>
+<script>
+// se o WebGL não existir ou a carga falhar antes de ficar pronto, mostra uma tela amigável (o save fica intacto)
+(function(){var ok=false;try{var c=document.createElement('canvas');ok=!!(c.getContext('webgl2')||c.getContext('webgl'));}catch(e){}
+var en=(navigator.language||'').toLowerCase().indexOf('en')===0;
+window.__semWebgl=function(){var w=document.getElementById('semWebgl');if(!w)return;
+ if(en){w.querySelector('h2').textContent="3D couldn't start";w.querySelector('p').textContent="Your device couldn't start the graphics. Your progress is saved.";w.querySelector('button').textContent='Try again';}
+ document.getElementById('carregando').classList.add('fora');w.classList.add('ativa');
+ try{window.Capacitor&&Capacitor.Plugins&&Capacitor.Plugins.SplashScreen&&Capacitor.Plugins.SplashScreen.hide();}catch(e){}};
+if(!ok)document.addEventListener('DOMContentLoaded',window.__semWebgl);
+window.addEventListener('error',function(){if(!window.__pronto)window.__semWebgl();},true);
+setTimeout(function(){if(!window.__pronto)window.__semWebgl();},20000);
+window.addEventListener('unhandledrejection',function(){if(!window.__pronto)window.__semWebgl();});
+document.addEventListener('click',function(e){if(e.target&&e.target.id==='btRecarregar'){if(window.__recarregar)window.__recarregar();else location.reload();}});})();
+</script>
+<script>if ('serviceWorker' in navigator && isSecureContext) addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(e => console.warn('sw', e)));</script>
+</body>
+</html>
