@@ -1,6 +1,6 @@
 // gerado por scripts/web-offline.mjs — não editar
-const CACHE = 'bat-9c42437c9a61';
-const ARQUIVOS = ["./","./apple-touch-icon.png","./assets/Fredoka-600-latin-DM6njrJ3.woff2","./assets/Fredoka-600-latin-ext-CYrqKuxd.woff2","./assets/Nunito-700-latin-BzFMHfZw.woff2","./assets/Nunito-700-latin-ext-CXYtwYOx.woff2","./assets/index-BDLgvwLR.css","./assets/index-BTfBE7_G.js","./assets/web-B850-V8l.js","./assets/web-B_L1x1qH.js","./assets/web-Cm6Xrkwh.js","./assets/web-D9WyTF8n.js","./assets/web-mC31hlMy.js","./icone-512.png","./index.html","./manifest.webmanifest","./privacidade.html","./privacidade.pre-email.html"];
+const CACHE = 'bat-15bf9a98e8f6';
+const ARQUIVOS = ["./","./apple-touch-icon.png","./assets/Fredoka-600-latin-DM6njrJ3.woff2","./assets/Fredoka-600-latin-ext-CYrqKuxd.woff2","./assets/Nunito-700-latin-BzFMHfZw.woff2","./assets/Nunito-700-latin-ext-CXYtwYOx.woff2","./assets/index-BDLgvwLR.css","./assets/index-e2r4DnkM.js","./assets/web-B0Zn5-p7.js","./assets/web-CRo-CctS.js","./assets/web-GCXCrFcB.js","./assets/web-NEFKrHTC.js","./assets/web-RdEJP1fA.js","./icone-512.png","./index.html","./manifest.webmanifest","./privacidade.html","./privacidade.pre-email.html"];
 self.addEventListener('install', e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(ARQUIVOS)).then(() => self.skipWaiting())); });
 self.addEventListener('activate', e => { e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== CACHE).map(k => caches.delete(k)))).then(() => self.clients.claim())); });
 self.addEventListener('fetch', e => {
